@@ -19,6 +19,28 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ data, project, catego
     return <span dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
+  // Helper to format client qualification: Bold text before first comma, normal after
+  const formatClientQualification = (text: string) => {
+    if (!text) return <b>&lt;QUALIFICAÇÃO DO CLIENTE&gt;</b>;
+    
+    // Find the index of the first comma
+    const firstCommaIndex = text.indexOf(',');
+    
+    if (firstCommaIndex === -1) {
+      // No comma, bold everything
+      return <b>{text}</b>;
+    }
+
+    const names = text.substring(0, firstCommaIndex);
+    const rest = text.substring(firstCommaIndex);
+
+    return (
+      <>
+        <b>{names}</b>{rest}
+      </>
+    );
+  };
+
   // Document 3 Logic Helpers
   const isPlural = !!(data.client2Name && data.client2Name.trim().length > 0);
   const pronouns = {
@@ -104,8 +126,8 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ data, project, catego
                  {renderHTML(project.qualificationText)}
               </div>
 
-              <div className="mb-6">
-                 <b>CERTIFICA que</b> {data.clientQualification ? <b>{data.clientQualification}</b> : <b>&lt;QUALIFICAÇÃO DO CLIENTE&gt;</b>}, 
+              <div className="mb-6 text-justify leading-normal tracking-wide">
+                 <b>CERTIFICA que</b> {formatClientQualification(data.clientQualification)}, 
                  nos termos do art. 47, § 1º, inc. II da Lei nº 16.050/2014, e demais regulamentações decorrentes.
               </div>
 
